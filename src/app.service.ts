@@ -18,4 +18,3 @@ export class AppService {
     return 'Test hello endpoint is working!';
   }
 }
-
