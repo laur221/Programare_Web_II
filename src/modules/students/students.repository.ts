@@ -7,7 +7,7 @@ import { GroupsRepository } from '../groups/groups.repository';
 @Injectable()
 export class StudentsRepository {
     private Students: Student[];
-    private Groups: { [key: number]: Group };
+    private Groups: { [key: number]: string };
 
     constructor(@Inject(GroupsRepository) private groupsRepository: GroupsRepository,) {
         this.initializeStudents();
@@ -23,8 +23,8 @@ export class StudentsRepository {
     private loadGroups() {
         try {
             const groupsArray: Group[] = this.groupsRepository.getAllGroups();
-            this.Groups = groupsArray.reduce<{ [key: number]: Group }>((acc, group) => {
-                acc[group.id] = group;
+            this.Groups = groupsArray.reduce<{ [key: number]: string }>((acc, group) => {
+                acc[group.id] = group.name;
                 return acc;
             }, {});
         } catch (error) {
@@ -35,7 +35,7 @@ export class StudentsRepository {
     getAllStudents() {
         return this.Students.map((student) => ({
             ...student,
-            groupName: this.Groups ? this.Groups[student.groupId]?.name : null,
+            groupName: this.Groups[student.groupId] || null,
         }));
     }
 
