@@ -1,9 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { Teacher } from './teacher.entity';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { Group } from '../groups/group.entity';
-import { CreateGroupDto } from '../groups/dto/create-group.dto';
 import { GroupsRepository } from '../groups/groups.repository';
 
 @Injectable()
@@ -16,9 +14,9 @@ export class TeachersRepository {
     }
 
     private initializeTeachers() {
-        this.Teachers  = [
+        this.Teachers = [
             { id: 1, name: 'Andrian Marescu', age: 44, work_age: 5, groupId: 1, },
-            { id: 2, name: 'Maria Popescu', age: 22, work_age: 2, groupId: 2, },
+            { id: 2, name: 'Irina Curan', age: 35, work_age: 2, groupId: 2, },
         ];
         this.loadGroups();
     }

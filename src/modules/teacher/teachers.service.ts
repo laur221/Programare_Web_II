@@ -8,7 +8,7 @@ export class TeachersService {
   constructor(
     private TeachersRepository: TeachersRepository,
     private GroupsRepository: GroupsRepository,
-  ) {}
+  ) { }
 
   getAllTeachers() {
     return this.TeachersRepository.getAllTeachers();

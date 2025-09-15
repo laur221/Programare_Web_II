@@ -9,4 +9,4 @@ import { GroupsModule } from '../groups/groups.module';
   controllers: [TeachersController],
   providers: [TeachersService, TeachersRepository],
 })
-export class TeachersModule {}
+export class TeachersModule { }

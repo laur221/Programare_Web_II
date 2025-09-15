@@ -2,10 +2,7 @@ import { ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
 export class CreateTeacherDto {
-  @ApiProperty({
-    example: 'Adam Wolter',
-    description: 'The name of the teacher',
-  })
+  @ApiProperty({ example: 'Adam Wolter', description: 'The name of the teacher' })
   @IsString()
   name: string;
 
@@ -17,10 +14,7 @@ export class CreateTeacherDto {
   @IsNumber()
   work_age: number;
 
-  @ApiProperty({
-    example: 1,
-    description: 'The ID of the group the teacher belongs to',
-  })
+  @ApiProperty({ example: 1, description: 'The ID of the group the teacher belongs to' })
   @IsNumber()
   groupId: number;
 }

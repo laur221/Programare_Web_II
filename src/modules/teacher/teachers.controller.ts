@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Param,
-  Put,
-  Delete,
-  Patch,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Post, Param, Put, Delete, Patch, Body } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherNameDto } from './dto/update-teacher-name.dto';
@@ -15,7 +6,7 @@ import { UpdateTeacherDto } from './dto/update-teacher.dto';
 
 @Controller('Teachers')
 export class TeachersController {
-  constructor(private TeachersService: TeachersService) {}
+  constructor(private TeachersService: TeachersService) { }
 
   @Get()
   getAllTeachers() {

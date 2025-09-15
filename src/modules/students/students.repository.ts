@@ -1,20 +1,17 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
 import { Student } from './student.entity';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Group } from '../groups/group.entity';
-import { CreateGroupDto } from '../groups/dto/create-group.dto';
 import { GroupsRepository } from '../groups/groups.repository';
 
 @Injectable()
 export class StudentsRepository {
     private Students: Student[];
-    private Groups: Group[];
+    private Groups: { [key: number]: Group };
 
     constructor(@Inject(GroupsRepository) private groupsRepository: GroupsRepository,) {
         this.initializeStudents();
     }
-
     private initializeStudents() {
         this.Students = [
             { id: 1, name: 'Ion Slutu', age: 20, email: 'ion@gmail.com', phone: '123456789', address: 'Strada Alpina 51', groupId: 1, },
@@ -25,16 +22,20 @@ export class StudentsRepository {
 
     private loadGroups() {
         try {
-            this.Groups = this.groupsRepository.getAllGroups();
+            const groupsArray: Group[] = this.groupsRepository.getAllGroups();
+            this.Groups = groupsArray.reduce<{ [key: number]: Group }>((acc, group) => {
+                acc[group.id] = group;
+                return acc;
+            }, {});
         } catch (error) {
-            this.Groups = [];
+            this.Groups = {};
         }
     }
+
     getAllStudents() {
         return this.Students.map((student) => ({
             ...student,
-            groupName: this.Groups
-                ? this.Groups.find((group) => group.id === student.groupId)?.name : null,
+            groupName: this.Groups ? this.Groups[student.groupId]?.name : null,
         }));
     }
 
@@ -52,7 +53,7 @@ export class StudentsRepository {
             address,
             groupId,
         };
-        const groupExists = this.Groups.some((group) => group.id === groupId);
+        const groupExists = this.Groups[groupId] !== undefined;
         if (!groupExists) {
             return null;
         }
@@ -66,10 +67,8 @@ export class StudentsRepository {
         if (studentIndex === -1) {
             return null;
         }
-        const groupIndex = this.Groups.findIndex(
-            (group) => group.id === parseInt(updateStudentDto.groupId.toString()),
-        );
-        if (groupIndex === -1) {
+        const groupExists = this.Groups[parseInt(updateStudentDto.groupId.toString())] !== undefined;
+        if (!groupExists) {
             return null;
         }
 

@@ -7,7 +7,7 @@ import { GroupsModule } from './modules/groups/groups.module';
 import { TeachersModule } from './modules/teacher/teachers.module';
 
 @Module({
-  imports: [PostsModule, StudentsModule, GroupsModule, TeachersModule],
+  imports: [PostsModule, GroupsModule, StudentsModule,  TeachersModule],
   controllers: [AppController],
   providers: [AppService],
 })

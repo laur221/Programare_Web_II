@@ -2,10 +2,7 @@ import { ApiExtraModels, ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
 export class UpdateTeacherDto {
-  @ApiProperty({
-    example: 'Mihail Smirnov',
-    description: 'The name of the teacher',
-  })
+  @ApiProperty({ example: 'Adam Walter', description: 'The name of the teacher' })
   @IsString()
   name: string;
 
