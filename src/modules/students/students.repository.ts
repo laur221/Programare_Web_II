@@ -9,7 +9,7 @@ export class StudentsRepository {
     private Students: Student[];
     private Groups: { [key: number]: string };
 
-    constructor(@Inject(GroupsRepository) private groupsRepository: GroupsRepository,) {
+    constructor(@Inject(GroupsRepository) private groupsRepository: GroupsRepository) {
         this.initializeStudents();
     }
     private initializeStudents() {
@@ -22,10 +22,10 @@ export class StudentsRepository {
 
     private loadGroups() {
         try {
-            const groupsArray: Group[] = this.groupsRepository.getAllGroups();
-            this.Groups = groupsArray.reduce<{ [key: number]: string }>((acc, group) => {
-                acc[group.id] = group.name;
-                return acc;
+            const groups: Group[] = this.groupsRepository.getAllGroups();
+            this.Groups = groups.reduce<{ [key: number]: string }>((objectgroup, group) => {
+                objectgroup[group.id] = group.name;
+                return objectgroup;
             }, {});
         } catch (error) {
             this.Groups = {};
@@ -33,6 +33,7 @@ export class StudentsRepository {
     }
 
     getAllStudents() {
+        this.loadGroups();
         return this.Students.map((student) => ({
             ...student,
             groupName: this.Groups[student.groupId] || null,
@@ -40,10 +41,15 @@ export class StudentsRepository {
     }
 
     getStudentById(id: string) {
-        return this.Students.find((student) => student.id === parseInt(id));
+        this.loadGroups();
+        return this.Students.map((student) => ({
+            ...student,
+            groupName: this.Groups[student.groupId] || null,
+        })).find((student) => student.id === parseInt(id));
     }
 
     createStudent(name: string, age: number, email: string, phone: string, address: string, groupId: number,) {
+        this.loadGroups();
         const newStudent = {
             id: this.Students.length + 1,
             name,
@@ -53,7 +59,7 @@ export class StudentsRepository {
             address,
             groupId,
         };
-        const groupExists = this.Groups[groupId] !== undefined;
+        const groupExists = this.Groups[newStudent.groupId] !== undefined;
         if (!groupExists) {
             return null;
         }
@@ -61,6 +67,7 @@ export class StudentsRepository {
         return newStudent;
     }
     updateStudent(id: string, updateStudentDto: UpdateStudentDto) {
+        this.loadGroups();
         const studentIndex = this.Students.findIndex(
             (student) => student.id === parseInt(id),
         );

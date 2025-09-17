@@ -34,9 +34,6 @@ export class StudentsService {
       createStudentDto.address,
       createStudentDto.groupId,
     );
-    if (!newStudent) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
-    }
     return newStudent;
 
   }
