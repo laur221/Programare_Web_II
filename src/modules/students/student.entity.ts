@@ -1,9 +1,25 @@
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
 export class Student {
-  id: number;
-  name: string;
-  age: number;
-  email: string;
-  phone: string;
-  address: string;
-  groupId: number;
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    name: string;
+
+    @Column()
+    age: number;
+
+    @Column()
+    email: string;
+
+    @Column()
+    phone: string;
+
+    @Column()
+    address: string;
+
+    @Column()
+    groupId: number;
 }

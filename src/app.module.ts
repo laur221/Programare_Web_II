@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { StudentsModule } from './modules/students/students.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { GroupsModule } from './modules/groups/groups.module';
-import { TeachersModule } from './modules/teacher/teachers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { Student } from './modules/students/student.entity';
+import { Group } from './modules/groups/group.entity';
 
 @Module({
   imports: [
@@ -15,16 +17,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       port: 3306,
       username: 'admin',
       password: '1234',
-      database: 'PW2',
-      entities: [],
+      database: 'pw2',
+      entities: [Student, Group],
       synchronize: true,
     }),
     PostsModule,
     GroupsModule,
-    StudentsModule,
-    TeachersModule
+    StudentsModule,    
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}}

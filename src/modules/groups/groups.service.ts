@@ -1,57 +1,45 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateGroupDto } from './dto/create-group.dto';
-import { GroupsRepository } from './groups.repository';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Group } from './group.entity';
 
 @Injectable()
 export class GroupsService {
-  constructor(private groupsRepository: GroupsRepository) {}
-
+  constructor(
+    @InjectRepository(Group)
+    private groupsRepository: Repository<Group>,
+  ) {}
   getAllGroups() {
-    return this.groupsRepository.getAllGroups();
+    return this.groupsRepository.find();
   }
 
   getGroupById(id: string) {
-    const group = this.groupsRepository.getGroupById(id);
-    if (!group) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
-    }
-    return group;
+    return this.groupsRepository.findOneBy({ id: parseInt(id) });
   }
 
-  createGroup(createGroupDto: CreateGroupDto) {
-    return this.groupsRepository.createGroup(
-      createGroupDto.name,
-      createGroupDto.description,
-    );
+  createGroup(createGroupDto: any) {
+    const newGroup = this.groupsRepository.create(createGroupDto);
+    return this.groupsRepository.save(newGroup);
   }
 
-  updateGroup(id: string, updateGroupDto: CreateGroupDto) {
-    const group = this.getGroupById(id);
-    if (!group) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
-    }
-    return this.groupsRepository.updateGroup(id, updateGroupDto);
+  updateGroup(id: string, updateGroupDto: any) {
+    return this.groupsRepository.update(id, updateGroupDto);
   }
 
-  partiallyUpdateGroup(id: string, updateGroupDto: CreateGroupDto) {
-    const group = this.getGroupById(id);
-    if (!group) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
-    }
-    return this.groupsRepository.updateGroup(id, updateGroupDto);
+  partiallyUpdateGroup(id: string, updateGroupDto: any) {
+    return this.groupsRepository.update(id, updateGroupDto);
   }
 
   deleteGroup(id: string) {
-    this.getGroupById(id);
-    return this.groupsRepository.deleteGroup(id);
+    return this.groupsRepository.delete(id);
   }
 
-  updateGroupName(id: string, name: string) {
-    const group = this.getGroupById(id);
-    if (!group) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+  async updateGroupName(id: string, name: string) {
+    const group = await this.getGroupById(id);
+    if (group) {
+      group.name = name;
+      return this.groupsRepository.save(group);
     }
-    group.name = name;
-    return this.groupsRepository.updateGroup(id, group);
+    return null;
   }
 }

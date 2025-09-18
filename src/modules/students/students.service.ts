@@ -1,75 +1,45 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
-import { StudentsRepository } from './students.repository';
-import { GroupsRepository } from '../groups/groups.repository';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Student } from './student.entity';
 
 @Injectable()
 export class StudentsService {
   constructor(
-    private StudentsRepository: StudentsRepository,
-    private GroupsRepository: GroupsRepository,
+    @InjectRepository(Student)
+    private studentsRepository: Repository<Student>,
   ) {}
-
   getAllStudents() {
-    return this.StudentsRepository.getAllStudents();
+    return this.studentsRepository.find();
   }
 
   getStudentById(id: string) {
-    const Student = this.StudentsRepository.getStudentById(id);
-    if (!Student) {
-      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-    }
-    return Student;
+    return this.studentsRepository.findOneBy({ id: parseInt(id) });
   }
 
-  createStudent(createStudentDto: CreateStudentDto) {
-    if (!this.GroupsRepository.getGroupById(createStudentDto.groupId.toString())) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
-    }
-    const newStudent = this.StudentsRepository.createStudent(
-      createStudentDto.name,
-      createStudentDto.age,
-      createStudentDto.email,
-      createStudentDto.phone,
-      createStudentDto.address,
-      createStudentDto.groupId,
-    );
-    return newStudent;
-
+  createStudent(createStudentDto: any) {
+    const newStudent = this.studentsRepository.create(createStudentDto);
+    return this.studentsRepository.save(newStudent);
   }
 
-  updateStudent(id: string, updateStudentDto: CreateStudentDto) {
-    const Student = this.getStudentById(id);
-    const Group = this.GroupsRepository.getGroupById(
-      updateStudentDto.groupId.toString(),
-    );
-    if (!Student) {
-      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-    } else if (!Group) {
-      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
-    }
-    return this.StudentsRepository.updateStudent(id, updateStudentDto);
+  updateStudent(id: string, updateStudentDto: any) {
+    return this.studentsRepository.update(id, updateStudentDto);
   }
 
-  partiallyUpdateStudent(id: string, updateStudentDto: CreateStudentDto) {
-    const Student = this.getStudentById(id);
-    if (!Student) {
-      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
-    }
-    return this.StudentsRepository.updateStudent(id, updateStudentDto);
+  partiallyUpdateStudent(id: string, updateStudentDto: any) {
+    return this.studentsRepository.update(id, updateStudentDto);
   }
 
   deleteStudent(id: string) {
-    this.getStudentById(id);
-    return this.StudentsRepository.deleteStudent(id);
+    return this.studentsRepository.delete(id);
   }
 
-  updateStudentName(id: string, name: string) {
-    const Student = this.getStudentById(id);
-    if (!Student) {
-      throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
+  async updateStudentName(id: string, name: string) {
+    const student = await this.getStudentById(id);
+    if (student) {
+      student.name = name;
+      return this.studentsRepository.save(student);
     }
-    Student.name = name;
-    return this.StudentsRepository.updateStudent(id, Student);
+    return null;
   }
 }

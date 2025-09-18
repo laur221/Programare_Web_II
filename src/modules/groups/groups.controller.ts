@@ -15,7 +15,7 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 
 @Controller('Groups')
 export class GroupsController {
-  constructor(private groupsService: GroupsService) {}
+  constructor(private groupsService: GroupsService) { }
 
   @Get()
   getAllGroups() {
@@ -33,7 +33,9 @@ export class GroupsController {
   }
 
   @Put(':id')
-  updateGroup(@Param('id') id: string, @Body() updateGroupDto: UpdateGroupDto) {
+  updateGroup(@Param('id') id: string,
+    @Body() updateGroupDto: UpdateGroupDto,
+  ) {
     return this.groupsService.updateGroup(id, updateGroupDto);
   }
 

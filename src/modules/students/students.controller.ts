@@ -15,7 +15,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Controller('Students')
 export class StudentsController {
-  constructor(private StudentsService: StudentsService) {}
+  constructor(private StudentsService: StudentsService) { }
 
   @Get()
   getAllStudents() {
