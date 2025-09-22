@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
 import { Student } from "../students/student.entity";
-@Entity()
+@Entity('group')
 export class Group {
   @PrimaryGeneratedColumn()
   id: number;
